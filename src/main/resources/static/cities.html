@@ -18,8 +18,12 @@ table tr.zoomHighlighted{
 
 <script>
 	$(document).ready(
+			
 			function() {
-				var adresa =  window.location.href ;
+				if(window.location.href === "http://localhost:8080/cities.html") {
+					window.location.href = window.location.href + "?colde=ALL"
+				}
+				var adresa =  window.location.href;
 				adresa = adresa.split("=");
 				//alert(adresa[1])
 				$.ajax({
@@ -92,7 +96,7 @@ table tr.zoomHighlighted{
 							+ "<td class=\"postalCode\">" + data.postalCode + "</td>"
 							+ "<td class=\"country\">" + data.countryName + "</td>"
 							+ "</td>"
-							+ "<td><a class=\"edit\" href='/api/cities/edtiCity/" + data[i].id + "'>"
+							+ "<td><a class=\"edit\" href='/api/cities/edtiCity/" + data.id + "'>"
 							+ "<img src='images/edit.gif'/></a></td>"
 							+ "<td><a class=\"remove\" href='/api/cities/removeCity/" + data.id + "'>" 
 							+ "<img src='images/remove.gif'/></a></td>"
