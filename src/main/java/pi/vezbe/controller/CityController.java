@@ -1,5 +1,6 @@
 package pi.vezbe.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import pi.vezbe.converters.CityDTOtoCity;
 import pi.vezbe.converters.CityToCityDTO;
 import pi.vezbe.DTO.CityDTO;
 import pi.vezbe.model.City;
+import pi.vezbe.model.Country;
 import pi.vezbe.service.CityService;
 import pi.vezbe.service.CountryService;
 
@@ -63,5 +65,25 @@ public class CityController {
 		retVal.setCountry(countryService.findOne(cityDTO.getCountryId()));
 		cityService.save(retVal);		
 		return new ResponseEntity<>(toCityDTO.convert(retVal), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "searchCity/{name}/{code}/{postalCode}/{country}", method = RequestMethod.GET)
+	public ResponseEntity<ArrayList<CityDTO>> searchCity(@PathVariable("name") String name,
+													  @PathVariable("code") String code,
+													  @PathVariable("postalCode") String postalCode,
+													  @PathVariable("country") Long countryId) {
+		
+		List<City> cities = cityService.findAll();
+		ArrayList<CityDTO> retVal = new ArrayList<CityDTO>();
+		for (City c : cities) {
+			if (c.getName().trim().toUpperCase().contains(name.trim().toUpperCase())
+					&& c.getCode().trim().toUpperCase().contains(code.trim().toUpperCase())
+					&& c.getPostalCode().trim().toUpperCase().contains(postalCode.trim().toUpperCase())
+					&& c.getCountry().getId() == countryId) {
+				System.out.println("NASAO");
+				retVal.add(toCityDTO.convert(c));
+			}
+		}
+		return new ResponseEntity<> (retVal, HttpStatus.OK);
 	}
 } 

@@ -29,16 +29,14 @@ table tr.zoomHighlighted{
 										+ "<td class=\"postalCode\">" + data[i].postalCode + "</td>"
 										+ "<td class=\"country\">" + data[i].countryName + "</td>"
 										+ "</td>"
-										+ "<td><a class=\"edit\" href='/api/cities/edtiCity/" + data[i].id + "'>" 
+										+ "<td><a class=\"edit\" href='/api/cities/edtiCity/" + data[i].id + "'>"          
 										+ "<img src='images/edit.gif'/></a></td>"
 										+ "<td><a class=\"remove\" href='/api/cities/removeCity/" + data[i].id + "'>" 
 										+ "<img src='images/remove.gif'/></a></td>"
 										+ "</tr>"
 								$("#dataTable").append(newRow)
 							}
-						});
-				
-				
+						});		
 				$.ajax({
 					url : "http://localhost:8080/api/countries/getCountries"
 				}).then(
@@ -48,6 +46,7 @@ table tr.zoomHighlighted{
 								+ data[i].name + "</option>" 
 								$("#drzavaSelect").append(newOption)
 								$("#drzavaSelectEdit").append(newOption)
+							//	$("#drzavaSelectSearch").append(newOption)
 								
 								newRow = "<tr><td class=\"code\">" + data[i].code + "</td>"
 								+ "<td class=\"name\">" + data[i].name + "</td>"
@@ -99,9 +98,49 @@ table tr.zoomHighlighted{
 					$("#dataTable").append(newRow)						
 						}
 					});
-					$('#inputModal').modal('toggle');
-					
+					$('#inputModal').modal('toggle');				
 				});
+				
+				
+				
+				$("#searchButton").click(function() {		
+					var code = $("#inputModal [name='code']").val();
+ 	                var name = $("#inputModal [name='name']").val();
+ 	                var postalCode = $("#inputModal [name='postanskiBroj']").val();
+ 	                var drzava = $("#inputModal [name='drzava']").val()	;
+ 	               if(code.length === 0 || !code.trim() || 
+ 	            		  name.length === 0 || !name.trim() ||
+ 	            		 postalCode.length === 0 || !postalCode.trim()) {
+ 	            	   alert("Podaci nisu validni!!");
+ 	               }else {
+	 	               $.ajax({
+							url: "/api/cities/searchCity/" + code + "/" + name + "/" + postalCode + "/" + drzava,
+							type: "GET",
+							success: function(data) {
+								$("tr:not('.header')").remove()
+								for (i = 0; i < data.length; i++) {
+									newRow = "<tr><td class=\"code\">" + data[i].code + "</td>"
+											+ "<td class=\"name\">" + data[i].name + "</td>"
+											+ "<td class=\"postalCode\">" + data[i].postalCode + "</td>"
+											+ "<td class=\"country\">" + data[i].countryName + "</td>"
+											+ "</td>"
+											+ "<td><a class=\"edit\" href='/api/cities/edtiCity/" + data[i].id + "'>"          
+											+ "<img src='images/edit.gif'/></a></td>"
+											+ "<td><a class=\"remove\" href='/api/cities/removeCity/" + data[i].id + "'>" 
+											+ "<img src='images/remove.gif'/></a></td>"
+											+ "</tr>"
+									$("#dataTable").append(newRow)
+								}
+							}	
+						});	
+	 	              $('#inputModal').modal('toggle');
+					}
+ 	             
+				});
+				
+				
+				
+				
 			});
 
 	$(document).on("click", '#dataTable tr', function(event) {
@@ -266,14 +305,16 @@ table tr.zoomHighlighted{
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zatvori</button>
-		        <button type="button" class="btn btn-primary" id="add">Potvrda</button>
+		        <button type="button" class="btn btn-primary" id="add">Dodaj</button>
+		        <button type="button" class="btn btn-primary" id="searchButton">Pretraga</button>
 		      </div>
 		      </form>
 		    </div>
 		  </div>
 		</div>
 
-		<div class="modal fade" id="inputModalEdit" tabindex="-1"
+			
+		<div class="modal fade" id="inputModalSearch" tabindex="-1"
 			role="dialog">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
@@ -288,34 +329,37 @@ table tr.zoomHighlighted{
 						<div class="modal-body">
 							<input type="hidden" name="id" id="id" />
 							<p>
-								<label for="oznaka">Nova oznaka</label> <input type="text"
+								<label for="oznaka">Oznaka</label> <input type="text"
 									name="code" id="oznaka" />
 							</p>
 							<p>
-								<label for="naziv">Nov naziv</label> <input type="text" name="name"
+								<label for="naziv">Naziv</label> <input type="text" name="name"
 									id="naziv" />
 							</p>
 							<p>
-								<label for="postanskiBroj">Novi poštanski broj</label> <input
+								<label for="postanskiBroj">Poštanski broj</label> <input
 									type="text" name="postanskiBroj" id="postanskiBroj" />
 							</p>
 							<p>
-								<label for="naziv">Država</label> <select name="drzava"
-									id="drzavaSelectEdit">
-								</select>
-								<button type="button" class="btn btn-info btn-sm"
-									data-toggle="modal" data-target="#drzaveModal">...</button>
+							
+							<p>
+								<label for="drzava">Država</label> <input
+									type="text" name="drzava" id="drzava" />
 							</p>
+							
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary"
 								data-dismiss="modal">Zatvori</button>
-							<button type="button" class="btn btn-primary" id="editButton">Potvrda</button>
+							<button type="button" class="btn btn-primary" id="searchButton">Trazi</button>
 						</div>
 					</form>
 				</div>
 			</div>
 		</div>
+		
+		
+		
 
 
 		<div class="modal fade" id="drzaveModal" role="dialog">
