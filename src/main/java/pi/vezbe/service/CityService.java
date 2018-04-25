@@ -11,4 +11,5 @@ public interface CityService {
 	List<City> save(List<City> cities);
 	City delete(Long id);
 	void delete(List<Long> ids);
+	List<City> findByCountryCode(String code);
 }

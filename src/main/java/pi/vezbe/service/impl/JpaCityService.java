@@ -56,4 +56,9 @@ public class JpaCityService implements CityService{
 		
 	}
 
+	@Override
+	public List<City> findByCountryCode(String code) {
+		return cityrepository.findByCountryCode(code);
+	}
+
 }

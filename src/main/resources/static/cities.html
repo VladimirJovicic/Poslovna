@@ -19,8 +19,11 @@ table tr.zoomHighlighted{
 <script>
 	$(document).ready(
 			function() {
+				var adresa =  window.location.href ;
+				adresa = adresa.split("=");
+				//alert(adresa[1])
 				$.ajax({
-					url : "http://localhost:8080/api/cities/getCities"
+					url : "http://localhost:8080/api/cities/getCities/" + adresa[1]
 				}).then(
 						function(data) {
 							for (i = 0; i < data.length; i++) {
@@ -136,11 +139,7 @@ table tr.zoomHighlighted{
 	 	              $('#inputModal').modal('toggle');
 					}
  	             
-				});
-				
-				
-				
-				
+				});	
 			});
 
 	$(document).on("click", '#dataTable tr', function(event) {

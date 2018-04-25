@@ -17,7 +17,6 @@ import pi.vezbe.converters.CityDTOtoCity;
 import pi.vezbe.converters.CityToCityDTO;
 import pi.vezbe.DTO.CityDTO;
 import pi.vezbe.model.City;
-import pi.vezbe.model.Country;
 import pi.vezbe.service.CityService;
 import pi.vezbe.service.CountryService;
 
@@ -37,10 +36,14 @@ public class CityController {
 	@Autowired
 	private CountryService countryService;
 	
-	@RequestMapping(value="getCities", method=RequestMethod.GET)
-	public ResponseEntity<List<CityDTO>> getCities(){
-		List<City> cities = cityService.findAll();
-		return new ResponseEntity<>(toCityDTO.convert(cities), HttpStatus.OK);		
+	@RequestMapping(value="getCities/{kod}", method=RequestMethod.GET)
+	public ResponseEntity<List<CityDTO>> getCities(@PathVariable ("kod") String kod){
+		if(kod.equals("ALL")){
+			List<City> cities = cityService.findAll();
+			return new ResponseEntity<>(toCityDTO.convert(cities), HttpStatus.OK);
+		}
+		List<City> cities = cityService.findByCountryCode(kod);
+		return new ResponseEntity<>(toCityDTO.convert(cities), HttpStatus.OK);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, consumes="application/json")
