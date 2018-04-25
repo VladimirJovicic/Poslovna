@@ -77,14 +77,13 @@ public class ContryController {
 		return new ResponseEntity<>(retVal, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "searchCountry/{name}/{code}", method = RequestMethod.GET)
-	public ResponseEntity<ArrayList<Country>> searchCountry(@PathVariable("name") String name,
-			@PathVariable("code") String code) {
+	@RequestMapping(value = "searchCountry", method = RequestMethod.POST)
+	public ResponseEntity<ArrayList<Country>> searchCountry(@RequestBody Country country) {
 		List<Country> countries = countryService.findAll();
 		ArrayList<Country> retVal = new ArrayList<Country>();
 		for (Country c : countries) {
-			if (c.getName().trim().toUpperCase().contains(name.trim().toUpperCase())
-					&& c.getCode().trim().toUpperCase().contains(code.trim().toUpperCase())) {
+			if (c.getName().trim().toUpperCase().contains(country.getName().trim().toUpperCase())
+					&& c.getCode().trim().toUpperCase().contains(country.getCode().trim().toUpperCase())) {
 				System.out.println("NASAO");
 				retVal.add(c);
 			}

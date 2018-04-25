@@ -31,7 +31,6 @@ table tr.zoomHighlighted{
 										+ "<td class=\"name\">" + data[i].name + "</td>"
 										+ "<td class=\"postalCode\">" + data[i].postalCode + "</td>"
 										+ "<td class=\"country\">" + data[i].countryName + "</td>"
-										+ "</td>"
 										+ "<td><a class=\"edit\" href='/api/cities/edtiCity/" + data[i].id + "'>"          
 										+ "<img src='images/edit.gif'/></a></td>"
 										+ "<td><a class=\"remove\" href='/api/cities/removeCity/" + data[i].id + "'>" 
@@ -49,13 +48,12 @@ table tr.zoomHighlighted{
 								+ data[i].name + "</option>" 
 								$("#drzavaSelect").append(newOption)
 								$("#drzavaSelectEdit").append(newOption)
-							//	$("#drzavaSelectSearch").append(newOption)
-								
 								newRow = "<tr><td class=\"code\">" + data[i].code + "</td>"
 								+ "<td class=\"name\">" + data[i].name + "</td>"
 								+ "<td class=\"idCell\">" + data[i].id + "</td>"
 								  "</tr>"
-								 $("#zoomTable").append(newRow)
+								 $("#zoomTable").append(newRow)								 
+								 
 							}
 						});
 				
@@ -70,6 +68,7 @@ table tr.zoomHighlighted{
 				$("#drzavaPickup").click(function(){
 					id = $(".zoomHighlighted").find(".idCell").html();
 					$("#drzavaSelect").val(id);
+					$("#drzavaSelectEdit").val(id);
 					$('#drzaveModal').modal('toggle');
 				});		
 				
@@ -107,38 +106,37 @@ table tr.zoomHighlighted{
 				
 				
 				$("#searchButton").click(function() {		
-					var code = $("#inputModal [name='code']").val();
- 	                var name = $("#inputModal [name='name']").val();
- 	                var postalCode = $("#inputModal [name='postanskiBroj']").val();
- 	                var drzava = $("#inputModal [name='drzava']").val()	;
- 	               if(code.length === 0 || !code.trim() || 
- 	            		  name.length === 0 || !name.trim() ||
- 	            		 postalCode.length === 0 || !postalCode.trim()) {
- 	            	   alert("Podaci nisu validni!!");
- 	               }else {
-	 	               $.ajax({
-							url: "/api/cities/searchCity/" + code + "/" + name + "/" + postalCode + "/" + drzava,
-							type: "GET",
-							success: function(data) {
-								$("tr:not('.header')").remove()
-								for (i = 0; i < data.length; i++) {
-									newRow = "<tr><td class=\"code\">" + data[i].code + "</td>"
-											+ "<td class=\"name\">" + data[i].name + "</td>"
-											+ "<td class=\"postalCode\">" + data[i].postalCode + "</td>"
-											+ "<td class=\"country\">" + data[i].countryName + "</td>"
-											+ "</td>"
-											+ "<td><a class=\"edit\" href='/api/cities/edtiCity/" + data[i].id + "'>"          
-											+ "<img src='images/edit.gif'/></a></td>"
-											+ "<td><a class=\"remove\" href='/api/cities/removeCity/" + data[i].id + "'>" 
-											+ "<img src='images/remove.gif'/></a></td>"
-											+ "</tr>"
-									$("#dataTable").append(newRow)
+					
+					formData = JSON.stringify({
+    	                code:$("#inputModalSearch [name='code']").val(),
+    	                name:$("#inputModalSearch [name='name']").val(),
+    	                postalCode:$("#inputModalSearch [name='postalCode']").val(),
+    	                countryName:$("#inputModalSearch [name='drzava']").val(),
+    	            });
+	 	              $.ajax({
+						url: "/api/cities/searchCity",
+						type: "POST",
+						data: formData,
+						contentType: "application/json",
+						datatype: 'json',
+						success: function(data) {
+						$("tr:not('.header')").remove()
+						for (i = 0; i < data.length; i++) {
+							newRow = "<tr><td class=\"code\">" + data[i].code + "</td>"
+								+ "<td class=\"name\">" + data[i].name + "</td>"
+								+ "<td class=\"postalCode\">" + data[i].postalCode + "</td>"
+								+ "<td class=\"country\">" + data[i].countryName + "</td>"
+								+ "</td>"
+								+ "<td><a class=\"edit\" href='/api/cities/edtiCity/" + data[i].id + "'>"          
+								+ "<img src='images/edit.gif'/></a></td>"
+								+ "<td><a class=\"remove\" href='/api/cities/removeCity/" + data[i].id + "'>" 
+								+ "<img src='images/remove.gif'/></a></td>"
+								+ "</tr>"
+						$("#dataTable").append(newRow)
 								}
 							}	
 						});	
-	 	              $('#inputModal').modal('toggle');
-					}
- 	             
+	 	              $('#inputModalSearch').modal('toggle');
 				});	
 			});
 
@@ -202,8 +200,9 @@ table tr.zoomHighlighted{
 				}
 			
 			});
-			$('#inputModalIzmena').modal('toggle');
+			$('#inputModalEdit').modal('toggle');
 		});
+		
 		
 	});
 	
@@ -224,7 +223,8 @@ table tr.zoomHighlighted{
 <body>
 	<div class="formContainer">
 			<ul>
-				<li><a href="#" id="search"><img src="images/search.gif" /></a></li>
+				<li><a href="#inputModalSearch"  data-toggle="modal" data-toggle="#inputModalSearch"
+			 id="search"><img src="images/search.gif" /></a></li>
 				<li><a href="#" id="refresh"><img src="images/refresh.gif" /></a></li>
 				<li><a href="#" id="help"><img src="images/help.gif" /></a></li>
 				<li class="group-start"><a id="first"><img src="images/first.gif" /></a></li>
@@ -275,7 +275,7 @@ table tr.zoomHighlighted{
 		 <div class="modal-dialog" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header">
-		        <h5 class="modal-title" id="exampleModalLabel">Nova država</h5>
+		        <h5 class="modal-title" id="exampleModalLabel">Novi grad</h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
@@ -305,7 +305,6 @@ table tr.zoomHighlighted{
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zatvori</button>
 		        <button type="button" class="btn btn-primary" id="add">Dodaj</button>
-		        <button type="button" class="btn btn-primary" id="searchButton">Pretraga</button>
 		      </div>
 		      </form>
 		    </div>
@@ -313,7 +312,7 @@ table tr.zoomHighlighted{
 		</div>
 
 			
-		<div class="modal fade" id="inputModalSearch" tabindex="-1"
+		<div class="modal fade" id="inputModalEdit" tabindex="-1"
 			role="dialog">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
@@ -339,27 +338,64 @@ table tr.zoomHighlighted{
 								<label for="postanskiBroj">Poštanski broj</label> <input
 									type="text" name="postanskiBroj" id="postanskiBroj" />
 							</p>
+							<p>					
 							<p>
-							
-							<p>
-								<label for="drzava">Država</label> <input
-									type="text" name="drzava" id="drzava" />
-							</p>
-							
+								<label for="naziv">Država</label> 
+								<select name="drzava" id="drzavaSelectEdit">
+								</select>
+								<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#drzaveModal">...	</button>
+							</p>					
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary"
 								data-dismiss="modal">Zatvori</button>
-							<button type="button" class="btn btn-primary" id="searchButton">Trazi</button>
+							<button type="button" class="btn btn-primary" id="editButton">Izmena</button>
 						</div>
 					</form>
 				</div>
 			</div>
 		</div>
 		
+	<div class="modal fade" id="inputModalSearch" tabindex="-1" role="dialog">
+		 <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Trazi grad</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <form id="inputForm">
+		      <div class="modal-body">
+					<input type="hidden" name="id" id="id" />
+				<p>
+					<label for="oznaka">Oznaka</label> <input type="text" name="code"
+						id="oznaka" />
+				</p>
+				<p>
+					<label for="naziv">Naziv</label> <input type="text" name="name"
+						id="naziv" />
+				</p>
+				<p>
+					<label for="postanskiBroj">Poštanski broj</label> <input type="text" name="postalCode"
+						id="postalCode" />
+				</p>
+				
+				<p>
+					<label for="postanskiBroj">Drzava</label> <input type="text" name="drzava"
+						id="drzava" />
+				</p>
+	
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zatvori</button>
+		        <button type="button" class="btn btn-primary" id="searchButton">Trazi</button>
+		      </div>
+		      </form>
+		    </div>
+		  </div>
+		</div>
 		
-		
-
 
 		<div class="modal fade" id="drzaveModal" role="dialog">
     		<div class="modal-dialog">

@@ -70,19 +70,16 @@ public class CityController {
 		return new ResponseEntity<>(toCityDTO.convert(retVal), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "searchCity/{name}/{code}/{postalCode}/{country}", method = RequestMethod.GET)
-	public ResponseEntity<ArrayList<CityDTO>> searchCity(@PathVariable("name") String name,
-													  @PathVariable("code") String code,
-													  @PathVariable("postalCode") String postalCode,
-													  @PathVariable("country") Long countryId) {
+	@RequestMapping(value = "searchCity", method = RequestMethod.POST)
+	public ResponseEntity<ArrayList<CityDTO>> searchCity(@RequestBody CityDTO cityDTO) {
 		
 		List<City> cities = cityService.findAll();
 		ArrayList<CityDTO> retVal = new ArrayList<CityDTO>();
 		for (City c : cities) {
-			if (c.getName().trim().toUpperCase().contains(name.trim().toUpperCase())
-					&& c.getCode().trim().toUpperCase().contains(code.trim().toUpperCase())
-					&& c.getPostalCode().trim().toUpperCase().contains(postalCode.trim().toUpperCase())
-					&& c.getCountry().getId() == countryId) {
+			if (c.getName().trim().toUpperCase().contains(cityDTO.getName().trim().toUpperCase())
+					&& c.getCode().trim().toUpperCase().contains(cityDTO.getCode().trim().toUpperCase())
+					&& c.getPostalCode().trim().toUpperCase().contains(cityDTO.getPostalCode().trim().toUpperCase())
+					&& c.getCountry().getName().trim().toUpperCase().contains(cityDTO.getCountryName().trim().toUpperCase())) {
 				System.out.println("NASAO");
 				retVal.add(toCityDTO.convert(c));
 			}

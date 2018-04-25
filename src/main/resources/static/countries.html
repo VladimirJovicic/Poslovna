@@ -86,23 +86,19 @@
 					}
 				
 				});
-
-								
+		
 				$("#search2").click(function(){
 					//pripremamo JSON koji cemo poslati
 					formData = JSON.stringify({
-    	                code:$("#inputForm [name='code']").val(),
-    	                name:$("#inputForm [name='name']").val(),
+    	                code:$("#inputModalSearch [name='code']").val(),
+    	                name:$("#inputModalSearch [name='name']").val(),
     	            });
-					var ime = $("#inputForm [name='name']").val();
-					var kod = $("#inputForm [name='code']").val();
-					
-					if(ime.length === 0 || !ime.trim() || kod.length === 0 || !kod.trim()) {
-						alert("Nedozvoljeni podaci");
-					}else {
 					$.ajax({
-						url: "/api/countries/searchCountry/" + ime + "/" + kod,
-						type: "GET",
+						url: "/api/countries/searchCountry",
+						type: "POST",
+						data: formData,
+						contentType: "application/json",
+						datatype: 'json',
 						success: function(data) {
 							$("tr:not('.header')").remove()
 							for (i = 0; i < data.length; i++) {
@@ -119,8 +115,8 @@
 							}
 						}	
 				});	
-			$('#inputModal').modal('toggle');
-				}
+			$('#inputModalSearch').modal('toggle');
+				
 				
 			});
 
@@ -193,7 +189,8 @@
 <body>
 	<div class="formContainer">
 		<ul>
-			<li><a href="#" id="search"><img src="images/search.gif" /></a></li>
+			<li><a href="#inputModalSearch"  data-toggle="modal" data-toggle="#inputModalSearch"
+			 id="search"><img src="images/search.gif" /></a></li>
 			<li><a href="#" id="refresh"><img src="images/refresh.gif" /></a></li>
 			<li class="group-start"><a href="#" id="help"><img
 					src="images/help.gif" /></a></li>
@@ -261,7 +258,6 @@
 						<button type="button" class="btn btn-secondary"
 							data-dismiss="modal">Zatvori</button>
 						<button type="button" class="btn btn-primary" id="add">Potvrda</button>
-						<button type="button" class="btn btn-primary" id="search2">Pretraga</button>
 					</div>
 				</form>
 			</div>
@@ -301,7 +297,37 @@
 		</div>
 	</div>
 
-
+	<div class="modal fade" id="inputModalSearch" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Trazi drzavu</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<form id="inputForm">
+					<div class="modal-body">
+						<input type="hidden" name="id" id="id" />
+						<p>
+							<label for="oznaka">Oznaka</label> <input type="text" name="code"
+								id="oznaka" />
+						</p>
+						<p>
+							<label for="naziv">Naziv</label> <input type="text" name="name"
+								id="naziv" />
+						</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Zatvori</button>
+						<button type="button" class="btn btn-primary" id="search2">Potvrda</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
 
 
