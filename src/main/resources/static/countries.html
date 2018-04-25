@@ -150,7 +150,7 @@
 		var url = $(this).attr("href");
 		$("#editCountryButton").click(function(){
 			formData = JSON.stringify({
-	   	  	   code:$("#inputFormEdit [name='code']").val(),
+			   code:$("#inputFormEdit [name='nameCode']").val(),
 	   	  	   name:$("#inputFormEdit [name='name']").val(),
 	   		 });	
 			$.ajax({
@@ -166,9 +166,9 @@
 	        		$(".highlighted .name").append(data.name);
 				}
 			});
-			
+			$('#inputModalIzmena').modal('toggle');
 		});
-		$('#inputFormEdit').modal('toggle');
+		
 	});
 });		
 	function sync(item){
@@ -278,7 +278,7 @@
 						<input type="hidden" name="id" id="id" />
 						<p>
 							<label for="oznaka">Nova oznaka</label> <input type="text"
-								name="code" id="oznaka" />
+								name="nameCode" id="oznakaEdit" />
 						</p>
 						<p>
 							<label for="naziv">Nov naziv</label> <input type="text"
