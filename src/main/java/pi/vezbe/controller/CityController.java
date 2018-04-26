@@ -65,7 +65,7 @@ public class CityController {
 		retVal.setCode(cityDTO.getCode());
 		retVal.setName(cityDTO.getName());
 		retVal.setPostalCode(cityDTO.getPostalCode());
-		retVal.setCountry(countryService.findOne(cityDTO.getCountryId()));
+		//retVal.setCountry(countryService.findOne(cityDTO.getCountryId()));
 		cityService.save(retVal);		
 		return new ResponseEntity<>(toCityDTO.convert(retVal), HttpStatus.OK);
 	}
